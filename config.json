@@ -1,0 +1,12 @@
+{
+    "baseURL": "https://gomod.garykim.dev",
+    "languageCode": "en-us",
+    "title": "garykim.dev Go Import Path",
+    "disableKinds": [
+        "taxonomy",
+        "taxonomyTerm",
+        "home",
+        "RSS",
+        "sitemap"
+    ]
+}
