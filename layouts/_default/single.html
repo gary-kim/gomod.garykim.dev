@@ -1,7 +1,7 @@
 
 {{ define "main" }}
 <section id="main">
-  <h1 id="title">{{ replaceRE "^https?://(.*)" "$1" .Permalink }} - {{ .Title }}</h1>
+  <h1 id="title">{{ replaceRE "^https?://(.*?)/$" "$1" .Permalink }} - {{ .Title }}</h1>
   <div>
         <article id="content">
            {{ .Content }}

@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-{{ with .Params.goimport }}<meta name="go-import" content="{{ . }}">{{ end }}
-{{ with .Params.gosource }}<meta name="go-source" content="{{ . }}">{{ end }}
+{{ with .Params.goimport }}<meta name="go-import" content="{{ replaceRE `^https?://(.*?)/$` `$1` $.Permalink }} {{ . }}">{{ end }}
+{{ with .Params.gosource }}<meta name="go-source" content="{{ replaceRE `^https?://(.*?)/$` `$1` $.Permalink }} {{ . }}">{{ end }}
 <title>{{ with .Title }}{{ . }} - {{end}}{{ .Site.Title }}</title>
