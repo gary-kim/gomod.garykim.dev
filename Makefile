@@ -1,20 +1,25 @@
-SHELL := /bin/bash
 HUGO := hugo
 
-.PHONY: build-production build-prod prod
+.PHONY: dep build build-production build-prod prod serve
+
 build-prod: build-production
+
 prod: build-production
-build-production:
-	HUGO_ENV=production $(HUGO) --minify
 
-.PHONY: build
+dep:
+	git submodule update --init --recursive
+
+update-dep:
+	git submodule update --init --recursive --remote
+
 build:
-	$(HUGO)
+	$(HUGO) ${extra_args}
 
-.PHONY: serve
+build-production:
+	HUGO_ENV=production $(HUGO) --minify --cleanDestinationDir ${extra_args}
+
 serve:
-	$(HUGO) serve
+	$(HUGO) serve ${extra_args}
 
-.PHONY: deploy
 deploy:
-	rclone sync --config scripts/travis.rclone.conf ./public deploy:gomod
+	rclone sync --config scripts/deploy.rclone.conf --ignore-times ./public deploy:"gomod.garykim.dev"

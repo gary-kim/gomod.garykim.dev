@@ -1,0 +1,76 @@
+kind: pipeline
+name: deploy
+
+steps:
+  - name: build-site
+    image: garykim/hugo:0-extended
+    pull: always
+    commands:
+      - make prod
+  - name: prepare-deploy
+    image: docker:git
+    commands:
+      - mv ./public /gomod.garykim.dev/public
+      - cp -r ./scripts /gomod.garykim.dev/scripts
+      - git clone https://github.com/gary-kim/gomod.garykim.dev /gomod.garykim.dev/repo
+      - (cd /gomod.garykim.dev/repo && git checkout gh-pages)
+    volumes:
+      - name: TMP
+        path: /gomod.garykim.dev
+    when:
+      branch:
+        - master
+      event:
+        - push
+      repo:
+        - gary-kim/gomod.garykim.dev
+  - name: move-deploy
+    image: garykim/rclone
+    pull: always
+    commands:
+      - rclone sync /gomod.garykim.dev/public /gomod.garykim.dev/repo --exclude '.git/**'
+    volumes:
+      - name: TMP
+        path: /gomod.garykim.dev
+    when:
+      branch:
+        - master
+      event:
+        - push
+      repo:
+        - gary-kim/gomod.garykim.dev
+  - name: push-deploy
+    image: docker:git
+    volumes:
+      - name: TMP
+        path: /gomod.garykim.dev
+    commands:
+      - cd /gomod.garykim.dev/repo
+      - git add -A
+      - GIT_COMMITTER_DATE="$(date)" git commit --author="Gary Kim <gary@garykim.dev>" --no-edit --amend --date "$(date)"
+      - git -c "credential.helper=/bin/sh /gomod.garykim.dev/scripts/gitcredentials.sh" push --force
+    environment:
+      GIT_PASSWORD:
+        from_secret: GITHUB_TOKEN
+      GIT_USERNAME: gary-kim-bot
+      GIT_COMMITTER_NAME: gary-kim-bot
+      GIT_COMMITTER_EMAIL: bot@garykim.dev
+    when:
+      branch:
+        - master
+      event:
+        - push
+      repo:
+        - gary-kim/gomod.garykim.dev
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+
+
+volumes:
+  - name: TMP
+    temp: {}
