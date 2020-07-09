@@ -5,7 +5,6 @@
     "disableKinds": [
         "taxonomy",
         "taxonomyTerm",
-        "home",
         "RSS",
         "sitemap"
     ]
