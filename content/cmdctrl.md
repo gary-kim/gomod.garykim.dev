@@ -6,3 +6,5 @@ gosource: "https://github.com/gary-kim/cmdctrl https://github.com/gary-kim/cmdct
 ---
 
 # Go Import for the cmdctrl project.
+
+You can find the project on GitHub at <https://github.com/gary-kim/cmdctrl>.
